@@ -1,0 +1,33 @@
+services:
+  _defaults:
+    public: true
+#  @see  https://devdocs.prestashop.com/1.7/development/architecture/migration-guide/forms/manuf-usage-in-forms/ for CQRS pattern usage examples.
+  demomanufhooksusage.domain.reviewer.command_handler.toggle_is_allowed_to_review_handler:
+    class: 'DemoManufHooksUsage\Domain\Reviewer\CommandHandler\ToggleIsAllowedToReviewHandler'
+    arguments:
+      - '@demomanufhooksusage.repository.reviewer'
+    tags:
+      - name: tactician.handler
+        command: 'DemoManufHooksUsage\Domain\Reviewer\Command\ToggleIsAllowedToReviewCommand'
+
+  demomanufhooksusage.domain.reviewer.query_handler.get_reviewer_settings_for_form_handler:
+    class: 'DemoManufHooksUsage\Domain\Reviewer\QueryHandler\GetReviewerSettingsForFormHandler'
+    arguments:
+      - '@demomanufhooksusage.repository.reviewer'
+    tags:
+      - name: tactician.handler
+        command: 'DemoManufHooksUsage\Domain\Reviewer\Query\GetReviewerSettingsForForm'
+
+  demomanufhooksusage.domain.reviewer.command_handler.update_is_allowed_to_review_handler:
+    class: 'DemoManufHooksUsage\Domain\Reviewer\CommandHandler\UpdateIsAllowedToReviewHandler'
+    arguments:
+      - '@demomanufhooksusage.repository.reviewer'
+    tags:
+      - name: tactician.handler
+        command: 'DemoManufHooksUsage\Domain\Reviewer\Command\UpdateIsAllowedToReviewCommand'
+
+  demomanufhooksusage.repository.reviewer:
+    class: 'DemoManufHooksUsage\Repository\ReviewerRepository'
+    arguments:
+      - '@doctrine.dbal.default_connection'
+      - '%database_prefix%'

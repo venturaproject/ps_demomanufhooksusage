@@ -1,0 +1,11 @@
+{
+  "name": "prestashop/demomanufhooksusage",
+  "description": "Help developers to understand how to create module using new hooks and apply best practices when using CQRS",
+  "autoload": {
+    "psr-4": {
+      "DemoManufHooksUsage\\": "src/"
+    }
+  },
+  "license": "MIT",
+  "type": "prestashop-module"
+}
