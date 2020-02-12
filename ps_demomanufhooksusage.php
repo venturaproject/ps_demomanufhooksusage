@@ -9,18 +9,6 @@
  */
 
 use DemoManufHooksUsage\Domain\Reviewer\Command\UpdateIsAllowedToReviewCommand;
-
-use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
-use PrestaShop\PrestaShop\Adapter\Presenter\AbstractLazyArray;
-use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductListingPresenter;
-use PrestaShop\PrestaShop\Adapter\Product\ProductColorsRetriever;
-use PrestaShop\PrestaShop\Core\Addon\Module\ModuleManagerBuilder;
-use PrestaShop\PrestaShop\Core\Product\ProductExtraContentFinder;
-use PrestaShop\PrestaShop\Core\Product\ProductInterface;
-
-
-
-
 use DemoManufHooksUsage\Domain\Reviewer\Exception\CannotCreateReviewerException;
 use DemoManufHooksUsage\Domain\Reviewer\Exception\CannotToggleAllowedToReviewStatusException;
 use DemoManufHooksUsage\Domain\Reviewer\Exception\ReviewerException;
@@ -110,8 +98,6 @@ class Ps_DemoManufHooksUsage extends Module
             $this->registerHook('actionAfterUpdateManufacturerFormHandler') &&
             $this->registerHook('displayManufUsageValue') &&
             $this->registerHook('displayProductListManufUsageValue') &&
-
-            
             $this->installTables()
         ;
     }
