@@ -9,6 +9,18 @@
  */
 
 use DemoManufHooksUsage\Domain\Reviewer\Command\UpdateIsAllowedToReviewCommand;
+
+use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
+use PrestaShop\PrestaShop\Adapter\Presenter\AbstractLazyArray;
+use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductListingPresenter;
+use PrestaShop\PrestaShop\Adapter\Product\ProductColorsRetriever;
+use PrestaShop\PrestaShop\Core\Addon\Module\ModuleManagerBuilder;
+use PrestaShop\PrestaShop\Core\Product\ProductExtraContentFinder;
+use PrestaShop\PrestaShop\Core\Product\ProductInterface;
+
+
+
+
 use DemoManufHooksUsage\Domain\Reviewer\Exception\CannotCreateReviewerException;
 use DemoManufHooksUsage\Domain\Reviewer\Exception\CannotToggleAllowedToReviewStatusException;
 use DemoManufHooksUsage\Domain\Reviewer\Exception\ReviewerException;
@@ -96,6 +108,7 @@ class Ps_DemoManufHooksUsage extends Module
             $this->registerHook('actionManufacturerFormBuilderModifier') &&
             $this->registerHook('actionAfterCreateManufacturerFormHandler') &&
             $this->registerHook('actionAfterUpdateManufacturerFormHandler') &&
+            $this->registerHook('displayManufUsageValue') &&
             $this->installTables()
         ;
     }
@@ -290,6 +303,35 @@ class Ps_DemoManufHooksUsage extends Module
         return Db::getInstance()->execute($sql);
     }
 
+    public function getManufacturerFeatured($id_manufacturer)
+    {
+       
+        $row = Db::getInstance()->getRow(
+            '
+            SELECT ar.`is_allowed_for_review` AS reviewed 
+            FROM ' . _DB_PREFIX_ . 'manufacturer m
+            LEFT JOIN `' . _DB_PREFIX_ . 'demomanufhooksusage_reviewer` ar ON ( m.`id_manufacturer` = ar.`id_manufacturer`)
+			WHERE ar.`id_manufacturer` = ' . (int) $id_manufacturer 
+        );
+
+        return isset($row['reviewed']) ? $row['reviewed'] : false;
+    }
+
+    public function hookDisplayManufUsageValue($params)
+    {
+      
+        $id_product = (int) Tools::getValue('id_product');
+        $product = new Product((int)Tools::getValue('id_product'), true, $this->context->language->id, $this->context->shop->id);
+        $manufacturer = new Manufacturer((int) $product->id_manufacturer, $this->context->language->id);
+        $featured = $this->getManufacturerFeatured((int)$product->id_manufacturer);
+        $this->context->smarty->assign(array(
+        'featured' =>  $featured,
+        'manufacturer_name' =>  $manufacturer->name,
+
+    ));
+
+    return $this->context->smarty->fetch('module:ps_demomanufhooksusage/views/templates/hook/ps_demomanufhooksusage.tpl');
+}
     /**
      * Uninstalls sample tables required for demonstration.
      *
