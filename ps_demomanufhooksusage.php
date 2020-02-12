@@ -109,6 +109,9 @@ class Ps_DemoManufHooksUsage extends Module
             $this->registerHook('actionAfterCreateManufacturerFormHandler') &&
             $this->registerHook('actionAfterUpdateManufacturerFormHandler') &&
             $this->registerHook('displayManufUsageValue') &&
+            $this->registerHook('displayProductListManufUsageValue') &&
+
+            
             $this->installTables()
         ;
     }
@@ -321,6 +324,7 @@ class Ps_DemoManufHooksUsage extends Module
     {
       
         $id_product = (int) Tools::getValue('id_product');
+        
         $product = new Product((int)Tools::getValue('id_product'), true, $this->context->language->id, $this->context->shop->id);
         $manufacturer = new Manufacturer((int) $product->id_manufacturer, $this->context->language->id);
         $featured = $this->getManufacturerFeatured((int)$product->id_manufacturer);
@@ -330,7 +334,26 @@ class Ps_DemoManufHooksUsage extends Module
 
     ));
 
-    return $this->context->smarty->fetch('module:ps_demomanufhooksusage/views/templates/hook/ps_demomanufhooksusage.tpl');
+    return $this->context->smarty->fetch('module:ps_demomanufhooksusage/views/templates/hook/product.tpl');
+}
+
+public function hookDisplayProductListManufUsageValue($params)
+{
+    /** @var ProductLazyArray $product */
+    $product = $params['product'];
+    $id_product = (int)$params['product']['id'];
+    $product = new Product((int)$id_product, true, $this->context->language->id, $this->context->shop->id);
+    $manufacturer = new Manufacturer((int)$params['product']['id_manufacturer'], $this->context->language->id);
+    $featured = $this->getManufacturerFeatured((int)$params['product']['id_manufacturer']);
+    $this->context->smarty->assign(array(
+        'product' => $product,
+        'product_id' => (int)$params['product']['id'],
+        'featured' =>  $featured,
+        'manufacturer_name' =>  $manufacturer->name,
+
+    ));
+
+    return $this->context->smarty->fetch('module:ps_demomanufhooksusage/views/templates/hook/product-list.tpl');
 }
     /**
      * Uninstalls sample tables required for demonstration.

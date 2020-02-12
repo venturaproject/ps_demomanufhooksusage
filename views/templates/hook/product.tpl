@@ -4,3 +4,4 @@
         {l s='Featured ' d='Modules.Ps_DemoManufHooksUsage.Shop'}{$manufacturer_name}
 
     {/if}
+
