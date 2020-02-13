@@ -328,7 +328,6 @@ public function hookDisplayProductListManufUsageValue($params)
     /** @var ProductLazyArray $product */
     $product = $params['product'];
     $id_product = (int)$params['product']['id'];
-    $product = new Product((int)$id_product, true, $this->context->language->id, $this->context->shop->id);
     $manufacturer = new Manufacturer((int)$params['product']['id_manufacturer'], $this->context->language->id);
     $featured = $this->getManufacturerFeatured((int)$params['product']['id_manufacturer']);
     $this->context->smarty->assign(array(
